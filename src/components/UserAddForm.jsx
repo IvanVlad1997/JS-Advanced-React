@@ -1,136 +1,146 @@
 import React from 'react';
 import './UserAddForm.css';
-import { Form, Button, Header, Icon, Message } from 'semantic-ui-react';
-import {isEmail,  isURL, isInt} from 'validator'
-
-class UserAddForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: '',
-            email: '',
-            isGoldClient: false,
-            salary: '', 
-            image: '',
-            errorEmail: true,
-            nameError: true,
-            linkError: true,
-            salaryError: true,     
-            disabled: true,
-        };
-    }
-
-    
-
-    updateName(event) {
-        this.setState({name: event.target.value}, () => {
-            
-             this.state.name.length === 0 && this.state.name.length > 15
-            ? this.setState({nameError:true}, () => this.validator())
-            : this.setState({nameError: false}, () => this.validator()) 
-    })
-}
-    updateImg(event) {
-        this.setState({image: event.target.value}, () => {
-            isURL(this.state.image) 
-            ? this.setState({linkError:false}, () => this.validator()) 
-            : this.setState({linkError:true}, () => this.validator())
-    })
-}
-
-    updateSalary(event) {
-        this.setState({salary: event.target.value}, () => {
-            isInt(this.state.salary, { min: 1000, max: 999999 }) 
-            ? this.setState({salaryError:false}, () => this.validator()) 
-            : this.setState({salaryError: true}, () => this.validator())
-    })
-}
-
-    updateEmail(event) {
-        this.setState({email: event.target.value}, () => {
-            isEmail(this.state.email) 
-            ? this.setState({errorEmail:false}, () => this.validator()) 
-            : this.setState({errorEmail:true}, () => this.validator())
-        })
-        
-            
-    }
-
-    updateIsGoldClient(event) {
-        this.setState({isGoldClient: event.target.checked});
-    }
-    
-    validator() {
-       
-        !this.state.errorEmail && !this.state.linkError && !this.state.salaryError && !this.state.nameError 
-        ? this.setState({disabled: false})
-        : this.setState({disabled:true})
-    }
-
- 
+import { Form, Button, Header, Icon } from 'semantic-ui-react';
+import { Formik } from 'formik'
 
 
-    render() {
-        const {name, email, isGoldClient, salary, image} = this.state; 
-       
+const UserAddForm = (props) =>{
+   
         return (
-            
-            <Form 
-                className="user-add-form"
-                onSubmit={(event) => this.props.submitAddForm(event, name, email, isGoldClient, salary, image)}
+            <React.Fragment>
+                 <Header  as='h2' icon textAlign='center' >
+                        <Icon size="tiny" name='user plus' circular />
+                        <Header.Content>Adaugă utilizatori</Header.Content>
+                 </Header>
+            <Formik
+                initialValues = {{email: '', name: '', salary: '', isGoldClient: false, linkImg: '' }}
+                validate = {values => {
+                    const errors ={}
+                
+                    //validare email
+                    if (!values.email)
+                        errors.email = 'Required';
+                    else if (
+                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                    ) {
+                        errors.email = 'Invalid email address'
+                    }
+
+
+                    //validare nume 
+                    if (!values.name)
+                        errors.name = 'Required'
+                    else if (values.name.length < 3 || values.name.length > 20)
+                      
+                         errors.name = 'Lungime necorespunzătoare. Trebuie să fie mai mare de 3 mai mic de 20'
+                    return errors
+                }}
+                onSubmit = {(values, {setSubmitting}) => {
+                    setTimeout(() => {
+                        alert(JSON.stringify(values, null, 2))
+                        props.submitAddForm( values.name, values.email, values.isGoldClient, values.salary, values.linkImg)
+                        setSubmitting(false)
+                    }, 400)
+                }}
             >
-                <Header  as='h2' icon textAlign='center' >
-                    <Icon size="tiny" name='user plus' circular />
-                    <Header.Content>Adaugă utilizatori</Header.Content>
-                </Header>
-                <Form.Field error = {this.state.nameError && true}>
-                                            
-                <label htmlFor="name">Nume:</label>
-                <input
-                    type="text"
-                    name="name"
-                    onChange={(event) => this.updateName(event)}
-                />
-                </Form.Field>
-                <Form.Field error = {this.state.errorEmail && true}>
-                <label htmlFor="email">Email:</label>
-                <input
-                    type="text"
-                    name="email"
-                    onChange={(event) => this.updateEmail(event)}
-                />
-                </Form.Field>
-                <Form.Field error = {this.state.salaryError && true}>
-                <label htmlFor="salary">Salariu:</label>
-                <input
-                    type="number"
-                    name="salary"
-                    onChange={(event) => this.updateSalary(event)}
-                />
-                </Form.Field>
-                <Form.Field error = {this.state.linkError && true}>
-                <label htmlFor="linkImg">Link imagine:</label>
-                <input
-                    type="text"
-                    name="linkImg"
-                    onChange={(event) => this.updateImg(event)}
-                />
-                </Form.Field>
-                <Form.Field>
-                <label htmlFor="is-gold-client">Client GOLD</label>
-                <input
-                    type="checkbox"
-                    name="is-gold-client"
-                    value="true"
-                    onChange={(event) => this.updateIsGoldClient(event)}
-                />
-                </Form.Field>
-              
-                <Button  disabled={this.state.disabled}
-                        primary type="submit">Introdu utilizatorul</Button>
-            </Form>
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting                    
+                }) => (
+                    <Form 
+                    className="user-add-form"
+                    onSubmit={handleSubmit}
+                >
+                     
+                    <Form.Field error ={(touched.name && errors.name !== undefined)}>
+                                                
+                    <label htmlFor="name">Nume:</label>
+                    <input
+                        type="text"
+                        name="name"
+                        onChange = {handleChange}
+                        onBlur = {handleBlur}
+                        value = {values.name}
+                    />
+                    </Form.Field>
+
+                    <Form.Field  error ={(touched.email && errors.email !== undefined) }>
+                    <label htmlFor="email">Email:</label>
+                    <input
+                        type="email"
+                        name="email"
+                        onChange = {handleChange}
+                        onBlur = {handleBlur}
+                        value = {values.email}
+                       
+                    />
+                       </Form.Field>
+
+                    <Form.Field  error ={(touched.salary && errors.salary !== undefined) }>
+                    <label htmlFor="salary">Salariu:</label>
+                    <input
+                        type="number"
+                        name="salary"
+                        onChange = {handleChange}
+                        onBlur = {handleBlur}
+                        value = {values.salary}
+                       
+                    />
+                      </Form.Field>
+                    <Form.Field  error ={(touched.linkImg && errors.linkImg !== undefined) }>
+                    <label htmlFor="linkImg">Link imagine:</label>
+                    <input
+                       
+                       
+                        type="text"
+                        name="linkImg"
+                        onChange = {handleChange}
+                        onBlur = {handleBlur}
+                        value = {values.linkImg}
+                       
+                    />
+                      </Form.Field>
+                    <Form.Field  error ={(touched.isGoldClient && errors.isGoldClient !== undefined) }>
+                    <label htmlFor="isGoldClient">Este client Gold?</label>
+                    <input
+                        type="checkbox"
+                        name="isGoldClient"
+                        onChange = {handleChange}
+                        onBlur = {handleBlur}
+                        value = {values.isGoldClient}
+                       
+                    />
+                      </Form.Field>
+                    
+           
+                  
+                    <Button  
+                        disabled={
+                             (touched.name === undefined) || (errors.name !== undefined) ||
+                             (touched.email === undefined) || (errors.email !== undefined) 
+                        }
+                            primary type="submit">Introdu utilizatorul
+                    </Button>
+                   
+                          
+                </Form>
+    
+
+                )}
+
+
+            </Formik>
+
+            
+           
+            </React.Fragment>
         )
-    }
+    
 }
 
 export default UserAddForm;

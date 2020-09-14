@@ -64,9 +64,9 @@ class App extends React.Component {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
-  submitAddForm(event, name, email, isGoldClient, salary, image) {
+  submitAddForm( name, email, isGoldClient, salary, image) {
   
-    event.preventDefault();
+  
     this.setState(prevState => {
       return {
         users: [
@@ -109,7 +109,7 @@ class App extends React.Component {
         <Grid.Row>
           <Grid.Column width={2}></Grid.Column>
           <Grid.Column textAlign="center" width={this.state.showUsers ? 6 : 12}>
-            <UserAddForm  submitAddForm={(event, name, email, isGoldClient, salary, image) => this.submitAddForm(event, name, email, isGoldClient, salary, image)}/>
+            <UserAddForm  submitAddForm={( name, email, isGoldClient, salary, image) => this.submitAddForm( name, email, isGoldClient, salary, image)}/>
           </Grid.Column>
 
           <Grid.Column width={6}>
