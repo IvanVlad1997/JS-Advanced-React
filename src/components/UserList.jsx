@@ -3,7 +3,7 @@ import UserItem from './UserItem';
 import { List, Header, Icon } from 'semantic-ui-react'
 
 function UserList(props) {
-    const { users } = props;
+    const { users, color } = props;
 
     return (
         <div>
@@ -11,7 +11,7 @@ function UserList(props) {
                 <Icon size="tiny" name='users' circular />
                 <Header.Content>Lista utilizatorilor</Header.Content>
             </Header>
-            <List  divided verticalAlign='middle' style={{padding: 50}}>
+            <List   divided verticalAlign='middle' style={{padding: 50, color : color}}>
             { users.map((user, index) => {
                 return <UserItem
                     id={ user.id }

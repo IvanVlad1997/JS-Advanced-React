@@ -17,6 +17,7 @@ class App extends React.Component {
       data: [],
       showUsers: false,
       showPosts: false,
+      textColorUsers: '#000000'
     };
   }
 
@@ -46,6 +47,9 @@ class App extends React.Component {
   }
   changeTextColor(event) {
     this.setState({textColor: event.target.value});
+  }
+  changeTextColorUsers(event) {
+    this.setState({textColorUsers: event.target.value});
   }
 
   getMaxId(users) {
@@ -100,7 +104,7 @@ class App extends React.Component {
   
     return(
 
-      <Grid  stackable className="app" style={{background: this.state.background, color: this.state.textColor}}>
+      <Grid  stackable className="app" style={{background: this.state.background}}>
         <Grid.Row>
           <Header as='h1' icon textAlign='center' style ={{paddingTop :20}}>
                 <Header.Content>Admin panel - Proiectul 1</Header.Content>
@@ -112,9 +116,9 @@ class App extends React.Component {
             <UserAddForm  submitAddForm={( name, email, isGoldClient, salary, image) => this.submitAddForm( name, email, isGoldClient, salary, image)}/>
           </Grid.Column>
 
-          <Grid.Column width={6}>
+          <Grid.Column width={6} >
              {  this.state.showUsers
-                    ?  <UserList  users={this.state.users}/>
+                    ?  <UserList color = { this.state.textColorUsers }  users={this.state.users}/>
                     :  null
              }
 
@@ -128,7 +132,7 @@ class App extends React.Component {
       ?   <Grid.Row  style ={{ paddingTop:100}}>   
             <Grid.Column width={2}></Grid.Column>
             <Grid.Column widescreen={12}  >
-                <PostList  posts = {this.state.posts}/>
+                <PostList color = { this.state.textColor }  posts = {this.state.posts}/>
             </Grid.Column>
           </Grid.Row>
       : null
@@ -159,7 +163,11 @@ class App extends React.Component {
                <input type="color" onChange={(event) => this.changeColor(event)}/>
               </Form.Field>
               <Form.Field>
-               <label >Culoare text informații utilizatori</label>
+               <label >Culoare informații listă utilizatori</label>
+               <input type="color" onChange={(event) => this.changeTextColorUsers(event)}/>
+              </Form.Field>
+              <Form.Field>
+               <label >Culoare icons listă postări</label>
                <input type="color" onChange={(event) => this.changeTextColor(event)}/>
               </Form.Field>
             </Form>

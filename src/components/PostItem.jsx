@@ -1,17 +1,17 @@
 import React from 'react';
 import {  List } from 'semantic-ui-react'
 
-function UserItem({titlu, descriere}) {
+function UserItem({titlu, descriere, color}) {
  
 
     
     return (
        
         
-        <List.Item>
+        <List.Item style={{color: color}} >
           <List.Icon name='angle double right' />
-          <List.Content>
-            <List.Header as='a'>{titlu}</List.Header>
+          <List.Content >
+            <List.Header >{titlu}</List.Header>
             <List.Description>
               {descriere}
             </List.Description>

@@ -2,18 +2,19 @@ import React from 'react';
 import { List, Header, Icon } from 'semantic-ui-react'
 import PostItem from './PostItem'
 
-function UserList({posts}) {
+function UserList({posts, color}) {
     
     return (
         <div>
              <Header as='h2' icon textAlign='center' >
                 <Icon size="tiny" name='list' circular />
-                <Header.Content>Lista de postări</Header.Content>
+                <Header.Content> Lista de postări</Header.Content>
             </Header>
             <List  verticalAlign='middle' style={{padding: 50}}>
                 {
                    posts && posts.map((post) => {
                             return <PostItem 
+                                color = {color}
                                 key={post.id}
                                 titlu = {post.title}
                                 descriere = {post.body}
